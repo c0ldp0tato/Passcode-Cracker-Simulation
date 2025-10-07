@@ -1,0 +1,60 @@
+import java.util.Scanner;
+
+public class Main {
+    public static void main(String[] args) {
+        Scanner sc = new Scanner(System.in);
+
+        System.out.println("=== 4-digit PIN brute-force SIMULATION ===");
+        System.out.println("This is an educational simulation. The secret PIN is stored locally in this program.");
+        System.out.print("Press Enter to have the program pick a random PIN, or type a 4-digit PIN to test: ");
+        String input = sc.nextLine().trim();
+
+        String secret;
+        if (input.matches("\\d{4}")) {
+            secret = input;
+        } else {
+            // pick a random PIN
+            int r = (int)(Math.random() * 10000);
+            secret = String.format("%04d", r);
+            System.out.println("Random secret PIN selected (hidden).");
+        }
+
+        System.out.println("Starting brute-force simulation...");
+        long start = System.nanoTime();
+
+        String found = null;
+        int attempts = 0;
+
+        for (int i = 0; i <= 9999; i++) {
+            String attempt = String.format("%04d", i);
+            attempts++;
+
+            // simulate checking the attempt against the secret (all local)
+            if (attempt.equals(secret)) {
+                found = attempt;
+                break;
+            }
+
+            // Optional: print progress every 1000 attempts to avoid too much output
+            if (attempts % 1000 == 0) {
+                System.out.println("Tried up to: " + attempt + " ...");
+            }
+        }
+
+        long end = System.nanoTime();
+        double seconds = (end - start) / 1_000_000_000.0;
+
+        if (found != null) {
+            System.out.println("\n PIN found: " + found);
+            System.out.println("Attempts: " + attempts);
+            System.out.printf("Time taken: %.4f seconds%n", seconds);
+        } else {
+            System.out.println("\nPIN not found (this shouldn't happen).");
+        }
+
+        System.out.println("\nNotes:");
+        System.out.println("- This program only tries combinations against a PIN stored inside the program.");
+
+        sc.close();
+    }
+}
